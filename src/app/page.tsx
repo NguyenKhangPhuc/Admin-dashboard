@@ -1,103 +1,135 @@
+'use client'
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { UserAttributes } from "./types";
+import { useMutation } from "@tanstack/react-query";
+import { userLogin, userSignup } from "./services";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter()
+  useEffect(() => {
+    const token = localStorage.getItem('userToken')
+    console.log(token)
+    router.push('/dashboard')
+  }, [])
+  const signUpMutation = useMutation({
+    mutationKey: ['create_user'],
+    mutationFn: userSignup,
+    onSuccess: (data) => {
+      alert('Sign up successfuly')
+    }
+  })
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  const loginMutation = useMutation({
+    mutationKey: ['login'],
+    mutationFn: userLogin,
+    onSuccess: ({ token }: { token: string }) => {
+      localStorage.setItem('userToken', token);
+      console.log(token)
+    }
+  })
+  const { register: registerLogin, handleSubmit: handleLogin, formState: { errors: loginError } } = useForm({
+    defaultValues: {
+      email: '',
+      password: ''
+    },
+    mode: 'onSubmit'
+  })
+  const { register: registerSignUp, handleSubmit: handleSignUp, watch, formState: { errors: signUpError }, clearErrors } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: ''
+    },
+    mode: 'onSubmit'
+  })
+
+  const signUp = (values: UserAttributes) => {
+    console.log(values)
+    signUpMutation.mutate(values)
+  }
+  const login = (values: UserAttributes) => {
+    console.log(values)
+    loginMutation.mutate(values)
+  }
+
+  return (
+    <div className="container min-w-full max-h-screen flex justify-center items-center py-10">
+      <div className="flex flex-col items-center justify-center h-screen">
+        {
+          isOpen ?
+            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4" >Sign up</h2>
+              <form className=" flex flex-col" onSubmit={handleSignUp(signUp)}>
+                <input
+                  type="email"
+                  className="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+                  placeholder="Email address"
+                  {...registerSignUp("email", { required: "First name is required" })}
+                />
+                {signUpError.email && <div className="error_message">{signUpError.email.message}</div>}
+                <input
+                  type="password"
+                  className="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+                  placeholder="Password"
+                  {...registerSignUp("password", { required: "Password is required" })}
+                />
+                {signUpError.password && <div className="error_message">{signUpError.password.message}</div>}
+                <input
+                  type="password"
+                  className="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+                  placeholder="Confirm password"
+                  {...registerSignUp('confirmPassword', {
+                    required: 'Confirm password is required', validate: (val: string) => {
+                      if (watch('password') != val) {
+                        return "Your password is not match"
+                      }
+                    }
+                  })}
+                  onChange={() => clearErrors('confirmPassword')}
+                />
+                {signUpError.confirmPassword && <div className="error_message">{signUpError.confirmPassword.message}</div>}
+                <div className="flex items-center justify-between flex-wrap">
+                  <div className="text-sm text-blue-500 underline">Go to sign in page</div>
+                  <a href="#" className="text-sm text-blue-500 hover:underline mb-0.5">Forgot password?</a>
+                  <p className="text-gray-900 mt-4"> Already have an account? <a href="#" className="text-sm text-blue-500 -200 hover:underline mt-4" onClick={() => setIsOpen(false)}>Signin</a></p>
+                </div>
+                <button type="submit" className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150">Login</button>
+              </form>
+            </div>
+            :
+            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Login</h2>
+              <form className="flex flex-col" onSubmit={handleLogin(login)}>
+                <input
+                  type="email"
+                  className="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" placeholder="Email address"
+                  {...registerLogin("email", { required: "First name is required" })}
+                />
+                {loginError.email && <div className="error_message">{loginError.email.message}</div>}
+                <input
+                  type="password"
+                  className="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+                  placeholder="Password"
+                  {...registerLogin("password", { required: "Password is required" })}
+                />
+                {loginError.email && <div className="error_message">{loginError.email.message}</div>}
+                <div className="flex items-center justify-between flex-wrap">
+                  <label htmlFor="remember-me" className="text-sm text-gray-900 cursor-pointer">
+                    <input type="checkbox" id="remember-me" className="mr-2" />
+                    Remember me
+                  </label>
+                  <a href="#" className="text-sm text-blue-500 hover:underline mb-0.5">Forgot password?</a>
+                  <p className="text-gray-900 mt-4"> Don&apos;t have an account? <a href="#" className="text-sm text-blue-500 -200 hover:underline mt-4" onClick={() => setIsOpen(true)}>Signup</a></p>
+                </div>
+                <button type="submit" className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150">Login</button>
+              </form>
+            </div>
+        }
+      </div>
     </div>
   );
 }
