@@ -41,7 +41,7 @@ export const userSignup = async (newUser: UserAttributes) => {
     }
 }
 
-export const createOrUpdateMicrosite = async (newMicrosite: MicrositeAttributes) => {
+export const createMicrosite = async (newMicrosite: MicrositeAttributes) => {
     try {
         const response = await apiClient.post('/microsite', newMicrosite)
         return response.data

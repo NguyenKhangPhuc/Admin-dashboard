@@ -1,3 +1,4 @@
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form"
 import { LeadAttributes } from "./leads"
 
 export interface NavLinks {
@@ -102,5 +103,11 @@ export interface MicrositeAttributes {
     faq: FAQ,
     cta: CTA
     footer: Footer
-    leads: Array<LeadAttributes>
+    leads?: Array<LeadAttributes>
+}
+
+export interface Props<T extends FieldValues> {
+    isAvailable: boolean,
+    register: UseFormRegister<T>,
+    errors: FieldErrors<T>
 }

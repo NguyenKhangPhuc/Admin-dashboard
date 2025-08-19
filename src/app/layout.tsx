@@ -28,11 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <QueryProvider>
           <NavBar />
-          <main className="ml-40 bg-[#302e2b]">{children}</main>
+          <main className="ml-40 ">{children}</main>
         </QueryProvider>
       </body>
     </html>

@@ -13,7 +13,7 @@ export default function Home() {
   useEffect(() => {
     const token = localStorage.getItem('userToken')
     console.log(token)
-    router.push('/dashboard')
+    router.push('/dashboard/profile')
   }, [])
   const signUpMutation = useMutation({
     mutationKey: ['create_user'],
