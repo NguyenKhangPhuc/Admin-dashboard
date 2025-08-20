@@ -13,103 +13,23 @@ import Benefit from '@/app/components/Benefit';
 import FAQ from '@/app/components/FAQ';
 import CTA from '@/app/components/CTA';
 import Footer from '@/app/components/Footer';
-import { useMutation } from '@tanstack/react-query';
-import { createMicrosite } from '@/app/services';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getSingleMicrosite, updateMicrosite } from '@/app/services';
+import { useParams } from 'next/navigation';
 
-
-
-
-
-
-
-
-
-
-const Home = () => {
+const UpdateForm = ({ microsite }: { microsite: MicrositeAttributes }) => {
     const parts = ['Introduction', 'Navigation', 'Hero Section', 'Proof Section', 'How Section', 'Case Section', 'Benefit', 'FAQ', 'CTA', 'Footer'];
-    const defaultValue: MicrositeAttributes = {
-        title: "", slug: "", styles: "", brand: "", navButton: "",
-        navLinks: [
-            { href: "", label: "", },
-            { href: "", label: "", },
-            { href: "", label: "", },
-            { href: "", label: "", },
-        ],
-        hero: { poster: "", video: "", preHeadline: "", headline: "", subheading: "", button: "", },
-        proofs: [
-            { icon: "", number: "", text: "", },
-            { icon: "", number: "", text: "", },
-            { icon: "", number: "", text: "", },
-        ],
-        how: {
-            title: "", subtitle: "", steps: [
-                { number: 0, title: "", text: "", },
-                { number: 0, title: "", text: "", },
-                { number: 0, title: "", text: "", },
-                { number: 0, title: "", text: "", },
-            ],
-        },
-        cases: {
-            title: "",
-            subtitle: "",
-            items: [
-                { image: "", alt: "", quote: "", author: "", result: "", },
-                { image: "", alt: "", quote: "", author: "", result: "", },
-            ],
-            logosTitle: "",
-            logos: [''],
-        },
-        benefits: {
-            title: "",
-            subtitle: "",
-            items: [
-                { icon: "", title: "", text: "", },
-                { icon: "", title: "", text: "", },
-                { icon: "", title: "", text: "", },
-                { icon: "", title: "", text: "", },
-            ],
-        },
-        faq: {
-            title: "", subtitle: "", items: [
-                { q: "", a: "", },
-                { q: "", a: "", },
-            ],
-        },
-        cta: {
-            title: "",
-            button: "",
-        },
-        footer: {
-            sections: [
-                {
-                    title: "",
-                    links: [{ href: "", label: "", }],
-                    texts: [""],
-                },
-                {
-                    title: "",
-                    links: [{ href: "", label: "", }, { href: "", label: "", },],
-                    texts: [""],
-                },
-                {
-                    title: "",
-                    links: [{ href: "", label: "", },],
-                    texts: [""],
-                },
-            ],
-            copyright: "",
-        },
-        leads: [],
-    }
     const [currentPart, setCurrentPart] = useState(0);
-    const createMicrositeMutation = useMutation({
-        mutationKey: ['create_microsite'],
-        mutationFn: createMicrosite
+    const updateMicrositeMutation = useMutation({
+        mutationKey: ['update_mutation'],
+        mutationFn: updateMicrosite,
+        onSuccess: (data) => {
+            console.log('Update successfully', data)
+        }
     })
     const { register, handleSubmit, formState: { errors } } = useForm<MicrositeAttributes>({
-        defaultValues: defaultValue
+        defaultValues: microsite
     })
-
     const handleNavigatePart = (type: 'next' | 'previous') => {
         if (type == 'next') {
             setCurrentPart(currentPart + 1)
@@ -118,9 +38,9 @@ const Home = () => {
         }
     }
 
-    const handleCreateForm = (values: MicrositeAttributes) => {
+    const handleUpdateForm = (values: MicrositeAttributes) => {
         console.log(values)
-        createMicrositeMutation.mutate(values)
+        updateMicrositeMutation.mutate({ micrositeId: microsite.id!, updatedMicrosite: values })
     }
 
 
@@ -154,7 +74,7 @@ const Home = () => {
                 return false
         }
     }
-
+    if (!microsite) return null
     return (
         <div className="w-full scroll-smooth min-h-screen container">
             <div className='w-full min-h-screen p-10 backdrop-blur-xs'>
@@ -177,7 +97,7 @@ const Home = () => {
                             )
                         })}
                     </div>
-                    <form className='w-full flex flex-col p-5 gap-5' onSubmit={handleSubmit(handleCreateForm)}>
+                    <form className='w-full flex flex-col p-5 gap-5' onSubmit={handleSubmit(handleUpdateForm)}>
                         <Introduction isAvailable={parts[currentPart] === 'Introduction'} register={register} errors={errors} />
 
                         <Navigation isAvailable={parts[currentPart] === 'Navigation'} register={register} errors={errors} />
@@ -207,13 +127,27 @@ const Home = () => {
                             <button
                                 type='submit'
                                 className='cursor-pointer bg-[#302e2b] hover:bg-[#454441] rounded-lg px-15 py-2'
-                            >Submit</button>
+                            >Update</button>
 
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+    )
+}
+
+
+const Home = () => {
+    const { id }: { id: string } = useParams()
+    const { data: microsite } = useQuery<MicrositeAttributes>({
+        queryKey: ['microsite', id],
+        queryFn: () => getSingleMicrosite(id)
+    })
+
+    if (!microsite) return null
+    return (
+        <UpdateForm microsite={microsite} />
     )
 }
 

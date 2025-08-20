@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { UserAttributes } from "./types";
 import { useMutation } from "@tanstack/react-query";
-import { userLogin, userSignup } from "./services";
+import { setTokenToRequest, userLogin, userSignup } from "./services";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +13,9 @@ export default function Home() {
   useEffect(() => {
     const token = localStorage.getItem('userToken')
     console.log(token)
-    router.push('/dashboard/profile')
+    if (token) {
+      router.push('/dashboard/profile')
+    }
   }, [])
   const signUpMutation = useMutation({
     mutationKey: ['create_user'],
@@ -28,7 +30,9 @@ export default function Home() {
     mutationFn: userLogin,
     onSuccess: ({ token }: { token: string }) => {
       localStorage.setItem('userToken', token);
+      setTokenToRequest()
       console.log(token)
+      router.push('/dashboard/profile')
     }
   })
   const { register: registerLogin, handleSubmit: handleLogin, formState: { errors: loginError } } = useForm({

@@ -2,12 +2,13 @@
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
+import { removeTokenFromRequest } from "../services";
 const NavBar = () => {
 
     const [mounted, setMounted] = useState(false);
     const handleLogout = () => {
         window.localStorage.removeItem('userToken');
-
+        removeTokenFromRequest()
     }
     useEffect(() => {
         setMounted(true);
@@ -25,10 +26,10 @@ const NavBar = () => {
 
                 <span>Create</span>
             </Link>
-            <div className="flex items-center space-x-2 hover:bg-[#302e2b] p-2 rounded" onClick={() => handleLogout()}>
+            <Link href={'/'} className="flex items-center space-x-2 hover:bg-[#302e2b] p-2 rounded" onClick={() => handleLogout()}>
 
                 <span >Logout</span>
-            </div>
+            </Link>
 
 
         </div>

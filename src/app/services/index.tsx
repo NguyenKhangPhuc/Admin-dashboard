@@ -6,7 +6,10 @@ let userToken: string | null;
 const apiClient = axios.create({
     baseURL: 'http://localhost:3005/api'
 })
-
+if (typeof window !== 'undefined') {
+    userToken = localStorage.getItem('userToken')
+    apiClient.defaults.headers.common['Authorization'] = `Bearer ${userToken}`
+}
 export const setTokenToRequest = () => {
     if (typeof window !== 'undefined') {
         userToken = localStorage.getItem('userToken')
@@ -56,5 +59,33 @@ export const getMicrosite = async () => {
         return response.data
     } catch (error) {
         throw new Error('Failed to get microsites')
+    }
+}
+
+
+export const getMe = async () => {
+    try {
+        const response = await apiClient.get('/user/me');
+        return response.data
+    } catch (error) {
+        throw new Error('Failed to fetch user data')
+    }
+}
+
+export const getSingleMicrosite = async (micrositeId: string) => {
+    try {
+        const response = await apiClient.get(`/microsite/${micrositeId}`);
+        return response.data
+    } catch (error) {
+        throw new Error('Failed to get single microsite')
+    }
+}
+
+export const updateMicrosite = async ({ micrositeId, updatedMicrosite }: { micrositeId: string, updatedMicrosite: MicrositeAttributes }) => {
+    try {
+        const response = await apiClient.put(`/microsite/${micrositeId}`, updatedMicrosite)
+        return response.data
+    } catch (error) {
+        throw new Error('Failed to update microsite')
     }
 }

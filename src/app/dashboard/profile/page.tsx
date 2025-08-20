@@ -1,7 +1,23 @@
 'use client';
 
+import { getMe, getMicrosite } from '@/app/services';
+import { UserAttributes } from '@/app/types';
+import { MicrositeAttributes } from '@/app/types/microsite';
 import Person2Icon from '@mui/icons-material/Person2';
+import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 const Home = () => {
+    const { data: me } = useQuery<UserAttributes>({
+        queryKey: ['get_me'],
+        queryFn: getMe
+    })
+
+    const { data: microsites } = useQuery<Array<MicrositeAttributes>>({
+        queryKey: ['fetch_microsites'],
+        queryFn: getMicrosite
+    })
+    console.log(me)
+    console.log(microsites)
     return (
         <div className="w-full scroll-smooth min-h-screen container">
             <div className='w-full min-h-screen backdrop-blur-xs'>
@@ -36,78 +52,23 @@ const Home = () => {
                             <div className="w-full">Leads</div>
                             <div className="w-full">Action</div>
                         </div>
-                        <div className="w-full grid grid-cols-5 px-5 py-2 font-semibold border-t border-gray-500" >
-                            <div className="w-full flex items-center">
-                                Example 1
-                            </div>
-                            <div className="w-full flex items-center">www.example1.com</div>
-                            <div className="w-full flex items-center">Seller</div>
-                            <div className="w-full flex items-center">10</div>
-                            <div className="w-full flex gap-2">
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>View</div>
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>Edit</div>
-                            </div>
-                        </div>
-                        <div className="w-full grid grid-cols-5 px-5 py-2 font-semibold border-t border-gray-500" >
-                            <div className="w-full flex items-center">
-                                Example 1
-                            </div>
-                            <div className="w-full flex items-center">www.example1.com</div>
-                            <div className="w-full flex items-center">Seller</div>
-                            <div className="w-full flex items-center">10</div>
-                            <div className="w-full flex gap-2">
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>View</div>
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>Edit</div>
-                            </div>
-                        </div>
-                        <div className="w-full grid grid-cols-5 px-5 py-2 font-semibold border-t border-gray-500" >
-                            <div className="w-full flex items-center">
-                                Example 1
-                            </div>
-                            <div className="w-full flex items-center">www.example1.com</div>
-                            <div className="w-full flex items-center">Seller</div>
-                            <div className="w-full flex items-center">10</div>
-                            <div className="w-full flex gap-2">
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>View</div>
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>Edit</div>
-                            </div>
-                        </div>
-                        <div className="w-full grid grid-cols-5 px-5 py-2 font-semibold border-t border-gray-500" >
-                            <div className="w-full flex items-center">
-                                Example 1
-                            </div>
-                            <div className="w-full flex items-center">www.example1.com</div>
-                            <div className="w-full flex items-center">Seller</div>
-                            <div className="w-full flex items-center">10</div>
-                            <div className="w-full flex gap-2">
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>View</div>
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>Edit</div>
-                            </div>
-                        </div>
-                        <div className="w-full grid grid-cols-5 px-5 py-2 font-semibold border-t border-gray-500" >
-                            <div className="w-full flex items-center">
-                                Example 1
-                            </div>
-                            <div className="w-full flex items-center">www.example1.com</div>
-                            <div className="w-full flex items-center">Seller</div>
-                            <div className="w-full flex items-center">10</div>
-                            <div className="w-full flex gap-2">
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>View</div>
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>Edit</div>
-                            </div>
-                        </div>
-                        <div className="w-full grid grid-cols-5 px-5 py-2 font-semibold border-t border-gray-500" >
-                            <div className="w-full flex items-center">
-                                Example 1
-                            </div>
-                            <div className="w-full flex items-center">www.example1.com</div>
-                            <div className="w-full flex items-center">Seller</div>
-                            <div className="w-full flex items-center">10</div>
-                            <div className="w-full flex gap-2">
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>View</div>
-                                <div className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>Edit</div>
-                            </div>
-                        </div>
+                        {microsites?.map((microsite) => {
+                            return (
+                                <div className="w-full grid grid-cols-5 px-5 py-2 font-semibold border-t border-gray-500" key={`microsite ${microsite.id}`}>
+                                    <div className="w-full flex items-center">
+                                        {microsite.brand}
+                                    </div>
+                                    <div className="w-full flex items-center">{`http://localhost:3005/${microsite.slug}`}</div>
+                                    <div className="w-full flex items-center">Seller/Buyer</div>
+                                    <div className="w-full flex items-center">{microsite.leads?.length}</div>
+                                    <div className="w-full flex gap-2">
+                                        <Link href={`http://localhost:3005/${microsite.slug}`} className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>View</Link>
+                                        <Link href={`/dashboard/update-microsite/${microsite.id}`} className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>Edit</Link>
+                                    </div>
+                                </div>
+                            )
+                        })}
+
 
                     </div>
                     <div className='w-full flex justify-center  py-2 font-semibold'>

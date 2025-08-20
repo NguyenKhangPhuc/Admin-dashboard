@@ -89,6 +89,7 @@ export interface Footer {
 }
 
 export interface MicrositeAttributes {
+    id?: string,
     title: string,
     slug: string,
     styles: string,
