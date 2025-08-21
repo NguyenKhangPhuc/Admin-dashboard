@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import { getMe, getMicrosite } from '@/app/services';
 import { PaginationCursor, UserAttributes } from '@/app/types';
 import { MicrositeAttributes } from '@/app/types/microsite';
@@ -8,13 +7,11 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
 const Home = () => {
+    const [cursor, setCursor] = useState<PaginationCursor>()
     const { data: me } = useQuery<UserAttributes>({
         queryKey: ['get_me'],
         queryFn: getMe
     })
-
-    const [cursor, setCursor] = useState<PaginationCursor>()
-
     const { data } = useQuery<{ response: Array<MicrositeAttributes>, cursor: PaginationCursor }>({
         queryKey: ['fetch_microsites', cursor],
         queryFn: () => getMicrosite({ order: '-1', nextCursor: cursor?.nextCursor, prevCursor: cursor?.prevCursor })
@@ -26,26 +23,14 @@ const Home = () => {
     console.log(cursor)
     return (
         <div className="w-full scroll-smooth min-h-screen container">
-            <div className='w-full min-h-screen backdrop-blur-xs'>
-                <div className='max-w-7xl mx-auto py-10 flex flex-col gap-10 text-white'>
-                    <div className="w-full flex flex-col bg-[#262522]">
-                        <div className="w-full flex gap-5  p-5">
-                            <div className='w-45 h-45 p-5 bg-gray-200 rounded-lg flex items-center justify-center'>
-                                <Person2Icon sx={{ color: 'black', fontSize: 80 }} />
-                            </div>
-                            <div className="flex-1 flex flex-col justify-between">
-                                <div className="flex flex-col gap-2">
-                                    <div className="font-bold text-white text-2xl">{me?.email}</div>
-                                    <div className="w-full flex gap-5">
-                                        <div className="text-base flex font-semibold gap-1"><div className="opacity-60">Joined</div>{me?.createdAt}</div>
-                                        <div className="text-base flex font-semibold gap-1"><div className="opacity-60">Microsites</div>{receivedCursor?.total}</div>
-                                    </div>
-                                </div>
-                                <div className='cursor-pointer w-[200px] p-3 bg-[#302e2b] flex items-center justify-center gap-3 relative hover:bg-[#454441]'>
-                                    <div className='font-bold text-base'>Update Profile</div>
-                                </div>
-                            </div>
-                        </div>
+            <div className="w-full min-h-screen p-10 backdrop-blur-xs">
+                <div className="'w-full mx-auto flex flex-col border border-gray-500 text-white">
+                    <div className="w-full flex gap-2 items-center border-b border-gray-500 font-bold p-5">
+                        <Person2Icon />
+                        <div> {me?.email}</div>
+                    </div>
+                    <div className="w-full flex justify-center items-center border-b border-gray-500 font-bold p-5 text-3xl">
+                        Manage Microsites
                     </div>
                     <div className="w-full flex flex-col backdrop-blur-sm bg-[#262522]" >
                         <div className="font-semibold py-2 px-5">Microsites short list</div>
@@ -74,11 +59,21 @@ const Home = () => {
                                 </div>
                             )
                         })}
-
-
                     </div>
-                    <div className='w-full flex justify-center  py-2 font-semibold'>
-                        <Link href={`/dashboard/manage-microsite`} className='bg-[#302e2b] hover:bg-[#454441] rounded-lg px-15 py-2'>View More</Link>
+                    <div className='w-full flex justify-center items-center gap-5 p-5'>
+                        <button
+                            disabled={receivedCursor?.hasPrevPage !== undefined ? !receivedCursor.hasPrevPage : true}
+                            className={`${receivedCursor?.hasPrevPage ? 'cursor-pointer w-[200px] p-3 bg-[#302e2b] flex items-center justify-center gap-3 relative hover:bg-[#454441]' : ' w-[200px] p-3 bg-[#302e2b] flex items-center justify-center gap-3 relative opacity-40'}`}
+                            onClick={() => setCursor({ prevCursor: receivedCursor?.prevCursor, nextCursor: undefined })}
+                        >
+                            <div className='font-bold text-base'>Previous Page</div>
+                        </button>
+                        <button
+                            disabled={receivedCursor?.hasNextPage !== undefined ? !receivedCursor.hasNextPage : true}
+                            className={`${receivedCursor?.hasNextPage ? 'cursor-pointer w-[200px] p-3 bg-[#302e2b] flex items-center justify-center gap-3 relative hover:bg-[#454441]' : ' w-[200px] p-3 bg-[#302e2b] flex items-center justify-center gap-3 relative opacity-40'}`}
+                            onClick={() => setCursor({ nextCursor: receivedCursor?.nextCursor, prevCursor: undefined })}>
+                            <div className='font-bold text-base'>Next Page</div>
+                        </button>
                     </div>
                 </div>
             </div>

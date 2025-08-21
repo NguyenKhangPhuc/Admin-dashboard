@@ -13,8 +13,9 @@ import Benefit from '@/app/components/Benefit';
 import FAQ from '@/app/components/FAQ';
 import CTA from '@/app/components/CTA';
 import Footer from '@/app/components/Footer';
-import { useMutation } from '@tanstack/react-query';
-import { createMicrosite } from '@/app/services';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createMicrosite, getMe } from '@/app/services';
+import { UserAttributes } from '@/app/types';
 
 
 
@@ -26,6 +27,7 @@ import { createMicrosite } from '@/app/services';
 
 
 const Home = () => {
+
     const parts = ['Introduction', 'Navigation', 'Hero Section', 'Proof Section', 'How Section', 'Case Section', 'Benefit', 'FAQ', 'CTA', 'Footer'];
     const defaultValue: MicrositeAttributes = {
         title: "", slug: "", styles: "", brand: "", navButton: "",
@@ -102,6 +104,10 @@ const Home = () => {
         leads: [],
     }
     const [currentPart, setCurrentPart] = useState(0);
+    const { data: me } = useQuery<UserAttributes>({
+        queryKey: ['get_me'],
+        queryFn: getMe
+    })
     const createMicrositeMutation = useMutation({
         mutationKey: ['create_microsite'],
         mutationFn: createMicrosite
@@ -161,7 +167,7 @@ const Home = () => {
                 <div className='w-full mx-auto flex flex-col border border-gray-500 text-white'>
                     <div className="w-full flex gap-2 items-center border-b border-gray-500 font-bold p-5">
                         <Person2Icon />
-                        <div> Paul</div>
+                        <div> {me?.email}</div>
                     </div>
                     <div className="w-full flex justify-center items-center border-b border-gray-500 font-bold p-5 text-3xl">
                         Create Microsite

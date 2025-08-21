@@ -53,9 +53,9 @@ export const createMicrosite = async (newMicrosite: MicrositeAttributes) => {
     }
 }
 
-export const getMicrosite = async () => {
+export const getMicrosite = async ({ order, nextCursor, prevCursor }: { order: string | undefined, nextCursor: string | undefined, prevCursor: string | undefined }) => {
     try {
-        const response = await apiClient.get('/microsite')
+        const response = await apiClient.get(`/microsite?limit=5${order ? `&order=${order}` : ''}${nextCursor ? `&sentNextCursor=${nextCursor}` : ''}${prevCursor ? `&sentPrevCursor=${prevCursor}` : ''}`);
         return response.data
     } catch (error) {
         throw new Error('Failed to get microsites')
