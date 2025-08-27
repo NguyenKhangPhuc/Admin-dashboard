@@ -1,28 +1,31 @@
 'use client';
 
 import { getMe, getMicrosite } from '@/app/services';
-import { PaginationCursor, UserAttributes } from '@/app/types';
+import { Pagination, PaginationCursor, UserAttributes } from '@/app/types';
 import { MicrositeAttributes } from '@/app/types/microsite';
 import Person2Icon from '@mui/icons-material/Person2';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
 const Home = () => {
+    ///Manage the profile page.
+    ///Get the information of the current user.
     const { data: me } = useQuery<UserAttributes>({
         queryKey: ['get_me'],
         queryFn: getMe
     })
 
-    const [cursor, setCursor] = useState<PaginationCursor>()
+    ///The default cursor is order by times (Newest to oldest)
+    const [cursor, setCursor] = useState<PaginationCursor>({ order: '-1', type: 'createdAt', nextPage: null, prevPage: null, search: '' })
 
-    const { data } = useQuery<{ response: Array<MicrositeAttributes>, cursor: PaginationCursor }>({
+    ///Get the Microsites.
+    const { data } = useQuery<Pagination<MicrositeAttributes>>({
         queryKey: ['fetch_microsites', cursor],
-        queryFn: () => getMicrosite({ order: '-1', nextCursor: cursor?.nextCursor, prevCursor: cursor?.prevCursor })
+        queryFn: () => getMicrosite(cursor)
     })
 
     console.log(data)
-    const microsites = data?.response
-    const receivedCursor = data?.cursor
+    const microsites = data?.docs
     console.log(cursor)
     return (
         <div className="w-full scroll-smooth min-h-screen container">
@@ -38,7 +41,7 @@ const Home = () => {
                                     <div className="font-bold text-white text-2xl">{me?.email}</div>
                                     <div className="w-full flex gap-5">
                                         <div className="text-base flex font-semibold gap-1"><div className="opacity-60">Joined</div>{me?.createdAt}</div>
-                                        <div className="text-base flex font-semibold gap-1"><div className="opacity-60">Microsites</div>{receivedCursor?.total}</div>
+                                        <div className="text-base flex font-semibold gap-1"><div className="opacity-60">Microsites</div>{data?.totalDocs}</div>
                                     </div>
                                 </div>
                                 <div className='cursor-pointer w-[200px] p-3 bg-[#302e2b] flex items-center justify-center gap-3 relative hover:bg-[#454441]'>

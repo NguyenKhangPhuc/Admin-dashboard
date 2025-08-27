@@ -18,8 +18,14 @@ import { getSingleMicrosite, updateMicrosite } from '@/app/services';
 import { useParams } from 'next/navigation';
 
 const UpdateForm = ({ microsite }: { microsite: MicrositeAttributes }) => {
+    ///Updating microsite form
+
+    ///Navigation bar of the updating microsite page, each index is each part of the microsite
     const parts = ['Introduction', 'Navigation', 'Hero Section', 'Proof Section', 'How Section', 'Case Section', 'Benefit', 'FAQ', 'CTA', 'Footer'];
+    ///Start with the Introduction part. (currentPart == 0)
     const [currentPart, setCurrentPart] = useState(0);
+
+    ///Update microsite mutations
     const updateMicrositeMutation = useMutation({
         mutationKey: ['update_mutation'],
         mutationFn: updateMicrosite,
@@ -27,50 +33,81 @@ const UpdateForm = ({ microsite }: { microsite: MicrositeAttributes }) => {
             console.log('Update successfully', data)
         }
     })
+
+    ///Using react hook form to manage the form inputs, with the default values is the information of the microsite being passed by parent.
     const { register, handleSubmit, formState: { errors } } = useForm<MicrositeAttributes>({
         defaultValues: microsite
     })
+
+    ///Function to handle going to the next part of the updating microsite form.
     const handleNavigatePart = (type: 'next' | 'previous') => {
+        ///If type equal next, increase the part by 1.
         if (type == 'next') {
             setCurrentPart(currentPart + 1)
         } else {
+            ///Else decrease it by 1
             setCurrentPart(currentPart - 1)
         }
     }
 
     const handleUpdateForm = (values: MicrositeAttributes) => {
+        ///Updating form function, with the micrositeId and the updated Microsite is the values of the react hook form.
         console.log(values)
         updateMicrositeMutation.mutate({ micrositeId: microsite.id!, updatedMicrosite: values })
     }
 
 
     const handleErrors = (index: number) => {
+        ///Handle nested error
+
         switch (index) {
             case 0:
+                ///If the current part is 0,
+                ///Check the title, slug, brand, navButton to know if it has errors
+                ///If one of them is a error, return true;
                 const condition1 = errors.title !== undefined
                 const condition2 = errors.slug !== undefined
                 const condition3 = errors.brand !== undefined
                 const condition4 = errors.navButton !== undefined
                 return condition1 || condition2 || condition3 || condition4
             case 1:
+                ///If the current part is 1, check if the navLinks is not undefined (meaning that it has errors).
+                ///If it has errors return true.
                 return errors.navLinks !== undefined
             case 2:
+                ///If the current part is 2, check if the hero section is not undefined (meaning that it has errors).
+                ///If it has errors return true.
                 return errors.hero !== undefined
             case 3:
+                ///If the current part is 3, check if the proofs section is not undefined (meaning that it has errors).
+                ///If it has errors return true.
                 return errors.proofs !== undefined
             case 4:
+                ///If the current part is 4, check if the how section is not undefined (meaning that it has errors).
+                ///If it has errors return true.
                 return errors.how !== undefined
             case 5:
+                ///If the current part is 5, check if the cases section is not undefined (meaning that it has errors).
+                ///If it has errors return true.
                 return errors.cases !== undefined
             case 6:
+                ///If the current part is 6, check if the benefit section is not undefined (meaning that it has errors).
+                ///If it has errors return true.
                 return errors.benefits !== undefined
             case 7:
+                ///If the current part is 7, check if the faq section is not undefined (meaning that it has errors).
+                ///If it has errors return true.
                 return errors.faq !== undefined
             case 8:
+                ///If the current part is 8, check if the cta section is not undefined (meaning that it has errors).
+                ///If it has errors return true.
                 return errors.cta !== undefined
             case 9:
+                ///If the current part is 9, check if the footer section is not undefined (meaning that it has errors).
+                ///If it has errors return true.
                 return errors.footer !== undefined
             default:
+                ///Default is false.
                 return false
         }
     }
@@ -139,7 +176,11 @@ const UpdateForm = ({ microsite }: { microsite: MicrositeAttributes }) => {
 
 
 const Home = () => {
+    ///Update microsite page.
+
+    ///Get the id of the microsite from the params.
     const { id }: { id: string } = useParams()
+    ///Get the information of single microsite by the id param.
     const { data: microsite } = useQuery<MicrositeAttributes>({
         queryKey: ['microsite', id],
         queryFn: () => getSingleMicrosite(id)
