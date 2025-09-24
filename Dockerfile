@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 COPY --chown=node:node . . 
 
+RUN echo "Listing components folder:" && ls -R /usr/src/app/src/components
+
 RUN npm ci
 
 RUN npm run build
