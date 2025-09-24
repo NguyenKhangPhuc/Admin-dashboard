@@ -32,6 +32,6 @@ jobs:
         uses: docker/build-push-action@v3
         with: 
           context: .
-          filed: ./src/Dockerfile
+          filed: ./Dockerfile
           push: true
           tags: nguyenkhangphuc/admin-dashboard-frontend:latest
