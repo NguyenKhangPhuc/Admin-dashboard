@@ -35,3 +35,23 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: nguyenkhangphuc/admin-dashboard-frontend:latest
+  deploy_to_ec2:
+    needs: [build_docker_image]
+    name: Deploy to EC2
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - name: Connect to EC2 and deploy
+        env: 
+          PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          HOSTNAME: ${{secrets.EC2_HOSTNAME}}
+          USERNAME: ${{secrets.EC2_USERNAME}}
+
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USERNAME}@${HOSTNAME} '
+            cd /home/ubuntu/admin-dashboard &&
+            docker-compose pull &&
+            docker-compose up -d
+          '
+          rm -f private_key
