@@ -51,7 +51,12 @@ jobs:
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USERNAME}@${HOSTNAME} '
             cd /home/ubuntu/admin-dashboard &&
-            docker-compose pull &&
+            docker kill admin-dashboard-frontend-container &&
+            docker kill admin-dashboard-backend-container &&
+            docker rm admin-dashboard-frontend-container &&
+            docker rm admin-dashboard-backend-container &&
+            docker rmi nguyenkhangphuc/admin-dashboard-frontend:latest &&
+            docker rmi nguyenkhangphuc/admin-dashboard-backend:latest &&
             docker-compose up -d
           '
           rm -f private_key
