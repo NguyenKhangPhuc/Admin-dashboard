@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "./providers/QueryProvider";
 import NavBar from "./components/Navbar";
+import { TokenContextProvider } from "./context/TokenContext";
 
 
 const geistSans = Geist({
@@ -27,14 +28,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
-      >
+      <TokenContextProvider>
         <QueryProvider>
-          <NavBar />
-          <main className="ml-40 ">{children}</main>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}
+          >
+
+            <NavBar />
+            <main className="flex-1 bg-black/80 ">{children}</main>
+          </body>
         </QueryProvider>
-      </body>
+      </TokenContextProvider>
     </html>
   );
 }

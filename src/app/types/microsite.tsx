@@ -91,7 +91,7 @@ export interface Footer {
 export interface MicrositeAttributes {
     id?: string,
     title: string,
-    slug: string,
+    domain: string,
     styles: string,
     brand: string,
     navButton: string,
@@ -105,6 +105,8 @@ export interface MicrositeAttributes {
     cta: CTA
     footer: Footer
     leads?: Array<LeadAttributes>
+    createdAt?: Date,
+    updatedAt?: Date
 }
 
 export interface Props<T extends FieldValues> {

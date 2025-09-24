@@ -7,11 +7,13 @@ import { UserAttributes } from "./types";
 import { useMutation } from "@tanstack/react-query";
 import { setTokenToRequest, userLogin, userSignup } from "./services";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useTokenContext } from "./context/TokenContext";
 
 const LoginForm = ({ router, setIsOpen }: { router: AppRouterInstance, setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
   ///Manage the login form.
 
   ///Manage the error message.
+  const { token, setToken } = useTokenContext();
   const [errorMessage, setErrorMessage] = useState('')
   ///Login mutation is used for login service.
   const loginMutation = useMutation({
@@ -25,6 +27,7 @@ const LoginForm = ({ router, setIsOpen }: { router: AppRouterInstance, setIsOpen
       ///Pushing the user to go to profile page.
       console.log(token)
       router.push('/dashboard/profile')
+      setToken(token);
     },
     onError: (error) => {
       ///If login failed, show the error message.
@@ -176,7 +179,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="container min-w-full max-h-screen flex justify-center items-center py-10">
+    <div className="min-w-full max-h-screen flex justify-center items-center py-10">
       <div className="flex flex-col items-center justify-center h-screen">
         {
           isOpen ?

@@ -7,8 +7,11 @@ import Person2Icon from '@mui/icons-material/Person2';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
+import dayjs from "dayjs";
+import { useTokenContext } from '@/app/context/TokenContext';
 const Home = () => {
     ///Manage the profile page.
+    const { token, setToken } = useTokenContext();
     ///Get the information of the current user.
     const { data: me } = useQuery<UserAttributes>({
         queryKey: ['get_me'],
@@ -27,62 +30,50 @@ const Home = () => {
     console.log(data)
     const microsites = data?.docs
     console.log(cursor)
+    if (!token) {
+        return <div className='w-full flex justify-center font-bold text-xl bg-white'>Please login before trying to access to this page</div>
+    }
     return (
-        <div className="w-full scroll-smooth min-h-screen container">
-            <div className='w-full min-h-screen backdrop-blur-xs'>
-                <div className='max-w-7xl mx-auto py-10 flex flex-col gap-10 text-white'>
-                    <div className="w-full flex flex-col bg-[#262522]">
-                        <div className="w-full flex gap-5  p-5">
-                            <div className='w-45 h-45 p-5 bg-gray-200 rounded-lg flex items-center justify-center'>
-                                <Person2Icon sx={{ color: 'black', fontSize: 80 }} />
-                            </div>
-                            <div className="flex-1 flex flex-col justify-between">
-                                <div className="flex flex-col gap-2">
-                                    <div className="font-bold text-white text-2xl">{me?.email}</div>
-                                    <div className="w-full flex gap-5">
-                                        <div className="text-base flex font-semibold gap-1"><div className="opacity-60">Joined</div>{me?.createdAt}</div>
-                                        <div className="text-base flex font-semibold gap-1"><div className="opacity-60">Microsites</div>{data?.totalDocs}</div>
-                                    </div>
-                                </div>
-                                <div className='cursor-pointer w-[200px] p-3 bg-[#302e2b] flex items-center justify-center gap-3 relative hover:bg-[#454441]'>
-                                    <div className='font-bold text-base'>Update Profile</div>
-                                </div>
-                            </div>
-                        </div>
+        <div className='w-full min-h-screen z-0'>
+            <div className='max-w-screen mx-auto py-10 flex flex-col gap-10 text-white'>
+
+                <div className='w-full flex gap-5 p-5 bg-[#262522]'>
+                    <div className='sm:w-45 sm:h-45 w-35 h-35 p-5 bg-gray-200 rounded-lg flex items-center justify-center'>
+                        <Person2Icon sx={{ color: 'black', fontSize: 80 }} />
                     </div>
-                    <div className="w-full flex flex-col backdrop-blur-sm bg-[#262522]" >
-                        <div className="font-semibold py-2 px-5">Microsites short list</div>
-                        <div className="w-full grid grid-cols-5 px-5 py-2 font-semibold bg-[#454441]">
-                            <div className="w-full">
-                                Microsite
-                            </div>
-                            <div className="w-full">Domain</div>
-                            <div className="w-full">Template</div>
-                            <div className="w-full">Leads</div>
-                            <div className="w-full">Action</div>
-                        </div>
+                    <div className='flex flex-col font-bold'>
+                        <div className='break-all'>{me?.email}</div>
+                        <div className='break-all'>Join: {dayjs(me?.createdAt).format("DD-MM-YY")}</div>
+                        <div className='break-all'>Microsites: {data?.totalDocs}</div>
+                    </div>
+                </div>
+                <div className="w-full flex flex-col backdrop-blur-sm bg-[#262522]" >
+                    <div className="font-semibold py-2 px-5 w-full bg-[#454441]">Microsites short list</div>
+                    <div className='w-full grid lg:grid-cols-2 grid-cols-1 gap-5 mt-2'>
                         {microsites?.map((microsite) => {
                             return (
-                                <div className="w-full grid grid-cols-5 px-5 py-2 font-semibold border-t border-gray-500" key={`microsite ${microsite.id}`}>
-                                    <div className="w-full flex items-center">
-                                        {microsite.brand}
+                                <div className='w-full grid grid-rows-4 lg:grid-cols-2 grid-cols-1 gap-3 bg-black/50 p-5' key={microsite.id}>
+                                    <div className="w-full flex items-center gap-2">
+                                        Microsite name: <strong>{microsite.brand}</strong>
                                     </div>
-                                    <div className="w-full flex items-center">{`http://localhost:3005/${microsite.slug}`}</div>
-                                    <div className="w-full flex items-center">Seller/Buyer</div>
-                                    <div className="w-full flex items-center">{microsite.leads?.length}</div>
+                                    <div className="w-full flex items-center gap-2">Domain: <strong className='break-all'>{`http://${microsite.domain}/`}</strong></div>
+                                    <div className="w-full flex items-center gap-2">Site type: <strong>Seller/Buyer</strong></div>
+                                    <div className="w-full flex items-center gap-2">Leads: <strong>{microsite.leads?.length}</strong></div>
+                                    <div className="w-full flex items-center gap-2">Created: <strong>{dayjs(microsite.createdAt).format("DD-MM-YY")}</strong></div>
+                                    <div className="w-full flex items-center gap-2">Last updated: <strong>{dayjs(microsite.updatedAt).format("DD-MM-YY")}</strong></div>
                                     <div className="w-full flex gap-2">
-                                        <Link href={`http://localhost:3005/${microsite.slug}`} className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>View</Link>
-                                        <Link href={`/dashboard/update-microsite/${microsite.id}`} className='flex flex-1 py-2 bg-[#302e2b] hover:bg-[#454441] rounded-lg items-center justify-center'>Edit</Link>
+                                        <Link href={`http://${microsite.domain}/`} className='flex flex-1 py-2 bg-[#302e2b] hover:bg-black rounded-lg items-center justify-center'>View</Link>
+                                        <Link href={`/dashboard/update-microsite/${microsite.id}`} className='flex flex-1 py-2 bg-[#302e2b] hover:bg-black rounded-lg items-center justify-center'>Edit</Link>
                                     </div>
                                 </div>
                             )
                         })}
+                    </div>
 
 
-                    </div>
-                    <div className='w-full flex justify-center  py-2 font-semibold'>
-                        <Link href={`/dashboard/manage-microsite`} className='bg-[#302e2b] hover:bg-[#454441] rounded-lg px-15 py-2'>View More</Link>
-                    </div>
+                </div>
+                <div className='w-full flex justify-center  py-2 font-semibold'>
+                    <Link href={`/dashboard/manage-microsite`} className='bg-[#302e2b] hover:bg-[#454441] rounded-lg px-15 py-2'>View More</Link>
                 </div>
             </div>
         </div>

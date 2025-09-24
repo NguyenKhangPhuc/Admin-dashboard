@@ -16,21 +16,13 @@ import Footer from '@/app/components/Footer';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createMicrosite, getMe } from '@/app/services';
 import { UserAttributes } from '@/app/types';
-
-
-
-
-
-
-
-
-
+import { useTokenContext } from '@/app/context/TokenContext';
 
 const Home = () => {
-
+    const { token, setToken } = useTokenContext();
     const parts = ['Introduction', 'Navigation', 'Hero Section', 'Proof Section', 'How Section', 'Case Section', 'Benefit', 'FAQ', 'CTA', 'Footer'];
     const defaultValue: MicrositeAttributes = {
-        title: "", slug: "", styles: "", brand: "", navButton: "",
+        title: "", domain: "", styles: "", brand: "", navButton: "",
         navLinks: [
             { href: "", label: "", },
             { href: "", label: "", },
@@ -134,7 +126,7 @@ const Home = () => {
         switch (index) {
             case 0:
                 const condition1 = errors.title !== undefined
-                const condition2 = errors.slug !== undefined
+                const condition2 = errors.domain !== undefined
                 const condition3 = errors.brand !== undefined
                 const condition4 = errors.navButton !== undefined
                 return condition1 || condition2 || condition3 || condition4
@@ -160,23 +152,25 @@ const Home = () => {
                 return false
         }
     }
-
+    if (!token) {
+        return <div className='w-full flex justify-center font-bold text-xl bg-white'>Please login before trying to access to this page</div>
+    }
     return (
-        <div className="w-full scroll-smooth min-h-screen container">
-            <div className='w-full min-h-screen p-10 backdrop-blur-xs'>
-                <div className='w-full mx-auto flex flex-col border border-gray-500 text-white'>
+        <div className="w-full scroll-smooth min-h-screen">
+            <div className='w-full min-h-screen  backdrop-blur-xs'>
+                <div className='w-full flex flex-col border border-gray-500 text-white'>
                     <div className="w-full flex gap-2 items-center border-b border-gray-500 font-bold p-5">
                         <Person2Icon />
-                        <div> {me?.email}</div>
+                        <div className='break-all'> {me?.email}</div>
                     </div>
                     <div className="w-full flex justify-center items-center border-b border-gray-500 font-bold p-5 text-3xl">
                         Create Microsite
                     </div>
-                    <div className='w-full grid grid-cols-10 '>
+                    <div className='w-full flex flex-wrap justify-center'>
                         {parts.map((part, index) => {
                             return (
                                 <div
-                                    className={`${parts[currentPart] === part && 'bg-[#454441]'} cursor-pointer w-full flex justify-center items-center p-5  hover:bg-[#454441] items-center ${handleErrors(index) && 'text-red-500'}`}
+                                    className={`${parts[currentPart] === part && 'bg-[#454441]'} cursor-pointer lg:w-1/5 w-1/3 flex justify-center items-center text-center p-5  hover:bg-[#454441] ${handleErrors(index) && 'text-red-500'}`}
                                     key={`part ${part}`}
                                     onClick={() => setCurrentPart(index)}
                                 >{part}</div>
@@ -195,7 +189,7 @@ const Home = () => {
                         <FAQ isAvailable={parts[currentPart] === 'FAQ'} register={register} errors={errors} />
                         <CTA isAvailable={parts[currentPart] === 'CTA'} register={register} errors={errors} />
                         <Footer isAvailable={parts[currentPart] === 'Footer'} register={register} errors={errors} />
-                        <div className='w-full flex justify-end gap-5'>
+                        <div className='w-full flex sm:flex-row flex-col justify-end gap-5'>
                             <button
                                 type='button'
                                 className={`${currentPart <= 0 ? 'bg-[#302e2b] opacity-50' : 'cursor-pointer bg-[#302e2b] hover:bg-[#454441]'} rounded-lg px-15 py-2`}

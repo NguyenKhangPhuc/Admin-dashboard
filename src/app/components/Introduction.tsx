@@ -14,11 +14,11 @@ const Introduction = ({ isAvailable, register, errors }: Props<MicrositeAttribut
                     {errors.title && <div className="error_message">{errors.title.message}</div>}
                 </label>
                 <label className='w-1/2 flex flex-col gap-1 '>
-                    <div className='text-medium font-bold'>Slug </div>
-                    <input className='w-full px-5 py-1 border border-gray-400 rounded-lg' placeholder='Input Slug'
-                        {...register('slug', { required: 'Slug is required' })}
+                    <div className='text-medium font-bold'>Domain* </div>
+                    <input className='w-full px-5 py-1 border border-gray-400 rounded-lg' placeholder='Input Domain'
+                        {...register('domain', { required: 'Domain is required' })}
                     />
-                    {errors.slug && <div className="error_message">{errors.slug.message}</div>}
+                    {errors.domain && <div className="error_message">{errors.domain.message}</div>}
                 </label>
             </div>
             <div className='w-full flex flex-col'>

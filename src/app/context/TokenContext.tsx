@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useState, createContext, useEffect } from "react";
+import { useContext, useState, createContext } from "react";
 
 interface TokenContextAttribute {
     token: string,
@@ -10,7 +10,7 @@ interface TokenContextAttribute {
 const TokenContext = createContext<TokenContextAttribute | undefined>(undefined)
 
 export const TokenContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [token, setToken] = useState<string>(typeof window !== undefined ? localStorage.getItem('userToken') || '' : '')
+    const [token, setToken] = useState<string>(typeof window !== 'undefined' ? localStorage.getItem('userToken') || '' : '')
 
     return (
         <TokenContext.Provider value={{ token, setToken }}>
