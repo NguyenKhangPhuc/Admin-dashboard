@@ -36,7 +36,8 @@ const UpdateForm = ({ microsite }: { microsite: MicrositeAttributes }) => {
         mutationKey: ['update_mutation'],
         mutationFn: updateMicrosite,
         onSuccess: (data) => {
-            console.log('Update successfully', data)
+            // Navigate to manage microsite page if update successfully
+            router.push('/dashboard/manage-microsite')
         }
     })
 

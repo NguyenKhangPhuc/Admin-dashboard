@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useState } from "react"
 
 const Microsite = ({ microsite }: { microsite: MicrositeAttributes }) => {
+    // Microsite component
     const [openLeads, setOpenLeads] = useState(false);
     return (
         <div className='w-full flex flex-col bg-black/50' key={microsite.id}>

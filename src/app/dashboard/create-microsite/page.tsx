@@ -20,15 +20,19 @@ import { useTokenContext } from '@/app/context/TokenContext';
 import { useRouter } from 'next/navigation';
 
 const Home = () => {
+    // Get the token from the context
     const { token, setToken } = useTokenContext();
+    // Using useRouter to navigate
     const router = useRouter();
-
+    // If the user have not login, redirect them to login page
     useEffect(() => {
         if (!token) {
             router.push('/');
         }
     }, [token])
-    const parts = ['Introduction', 'Navigation', 'Hero Section', 'Proof Section', 'How Section', 'Case Section', 'Benefit', 'FAQ', 'CTA', 'Footer'];
+    // Parts of microsite
+    const parts = ['Introduction', 'Navigation', 'Hero Section', 'Proof Section', 'Benefit', 'How Section', 'Case Section', 'FAQ', 'CTA', 'Footer'];
+    // Default values to input
     const defaultValue: MicrositeAttributes = {
         title: "", domain: "", styles: "", brand: "", navButton: "",
         navLinks: [
@@ -103,22 +107,29 @@ const Home = () => {
         },
         leads: [],
     }
+
+    // Manage the current part of the microsite
     const [currentPart, setCurrentPart] = useState(0);
+    // Get the current user
     const { data: me } = useQuery<UserAttributes>({
         queryKey: ['get_me'],
         queryFn: getMe
     })
+
+    // Create microsite mutation
     const createMicrositeMutation = useMutation({
         mutationKey: ['create_microsite'],
         mutationFn: createMicrosite,
         onSuccess: () => {
+            // If create successfully, navigate to manage microsite
             router.push('/dashboard/manage-microsite')
         }
     })
+    // React hook form to register, and handleSubmit
     const { register, handleSubmit, formState: { errors } } = useForm<MicrositeAttributes>({
         defaultValues: defaultValue
     })
-
+    // Function to navigate to the next part
     const handleNavigatePart = (type: 'next' | 'previous') => {
         if (type == 'next') {
             setCurrentPart(currentPart + 1)
@@ -127,12 +138,13 @@ const Home = () => {
         }
     }
 
+    // Function to create the microsite
     const handleCreateForm = (values: MicrositeAttributes) => {
         console.log(values)
         createMicrositeMutation.mutate(values)
     }
 
-
+    // Function to handling error if there exists
     const handleErrors = (index: number) => {
         switch (index) {
             case 0:
