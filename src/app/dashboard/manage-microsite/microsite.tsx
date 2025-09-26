@@ -14,7 +14,7 @@ const Microsite = ({ microsite }: { microsite: MicrositeAttributes }) => {
                 <div className="w-full flex items-center gap-2">
                     Microsite name: <strong>{microsite.brand}</strong>
                 </div>
-                <div className="w-full h-[50px] flex items-center gap-2">Domain: <strong className="w-full break-all">{`http://${microsite.domain}sadasdasdasdasdsad`}</strong></div>
+                <div className="w-full h-[50px] flex items-center gap-2">Domain: <strong className="w-full break-all">{`http://${microsite.domain}/`}</strong></div>
                 <div className="w-full h-[50px] flex items-center gap-2">Site type: <strong>Seller/Buyer</strong></div>
                 <div className="w-full h-[50px] flex items-center gap-2">Leads: <strong>{microsite.leads?.length}</strong></div>
                 <div className="w-full h-[50px] flex items-center gap-2">Created: <strong>{dayjs(microsite.createdAt).format("DD-MM-YY")}</strong></div>
