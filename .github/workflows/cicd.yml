@@ -1,0 +1,59 @@
+name: CI/CD pipeline for admin-dashboard-frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_docker_image:
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
+      
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with: 
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: nguyenkhangphuc/admin-dashboard-frontend:latest
+  deploy_to_ec2:
+    needs: [build_docker_image]
+    name: Deploy to EC2
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - name: Connect to EC2 and deploy
+        env: 
+          PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          HOSTNAME: ${{secrets.EC2_HOSTNAME}}
+          USERNAME: ${{secrets.EC2_USERNAME}}
+
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USERNAME}@${HOSTNAME} '
+            cd /home/ubuntu/admin-dashboard &&
+            docker kill admin-dashboard-frontend-container &&
+            docker kill admin-dashboard-backend-container &&
+            docker rm admin-dashboard-frontend-container &&
+            docker rm admin-dashboard-backend-container &&
+            docker rmi nguyenkhangphuc/admin-dashboard-frontend:latest &&
+            docker rmi nguyenkhangphuc/admin-dashboard-backend:latest &&
+            docker-compose down
+            docker-compose up -d
+          '
+          rm -f private_key

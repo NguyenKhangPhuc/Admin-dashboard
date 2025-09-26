@@ -5,16 +5,18 @@ import { MicrositeAttributes } from '@/app/types/microsite';
 import Person2Icon from '@mui/icons-material/Person2';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import dayjs from 'dayjs';
 import Microsite from './microsite';
 import { useTokenContext } from '@/app/context/TokenContext';
+import { redirect, useRouter } from 'next/navigation';
 const Home = () => {
     ///Manage microsites page.
     const { token, setToken } = useTokenContext();
+    const router = useRouter()
     ///The default cursor makes the microsites ordered by time created (Newest to lowest).
     const [cursor, setCursor] = useState<PaginationCursor>({ order: '-1', type: 'createdAt', nextPage: null, prevPage: null, search: '' });
     ///Manage the value of the search input
@@ -22,6 +24,11 @@ const Home = () => {
     ///Manage the visibility of the filter card.
     const [openFilter, setOpenFilter] = useState(false);
 
+    useEffect(() => {
+        if (!token) {
+            router.push('/')
+        }
+    }, [token])
     ///Filter options for mapping.
     const filterOptions = [
         {
@@ -71,9 +78,6 @@ const Home = () => {
         ///Set the cursor values to the new option value, changing the nextPage and prevPage to null to reset the page.
         ///Search input is still in query because it does not affect.
         setCursor({ order: filterOption.order, type: filterOption.type, nextPage: null, prevPage: null, search: searchInput })
-    }
-    if (!token) {
-        return <div className='w-full flex justify-center font-bold text-xl bg-white'>Please login before trying to access to this page</div>
     }
     console.log(cursor)
     const microsites = data?.docs
@@ -129,7 +133,13 @@ const Home = () => {
                         <FilterAltIcon />
                     </div>
                 </div>
-                <Microsite microsites={microsites} />
+                <div className='w-full grid lg:grid-cols-2 grid-cols-1 gap-5 mt-2'>
+                    {microsites?.map((microsite) => {
+                        return (
+                            <Microsite microsite={microsite} key={`Microsite ${microsite.id}`} />
+                        )
+                    })}
+                </div>
                 <div className='w-full flex sm:flex-row flex-col justify-center items-center gap-5 p-5'>
                     <button
                         disabled={data?.hasPrevPage !== undefined ? !data.hasPrevPage : true}

@@ -19,7 +19,7 @@ const Footer = ({ isAvailable, register, errors }: Props<MicrositeAttributes>) =
                     <label className='w-full flex flex-col gap-1'>
                         <div className='text-medium font-bold'>Title</div>
                         <input className='w-full px-5 py-1 border border-gray-400 rounded-lg' placeholder='Input title'
-                            {...register('footer.sections.0.title', { required: 'FAQ answer is required' })}
+                            {...register('footer.sections.0.title', { required: 'Footer title is required' })}
                         />
                         {errors.footer?.sections && errors.footer.sections[0]?.title && <div className="error_message">{errors.footer.sections[0]?.title.message}</div>}
                     </label>

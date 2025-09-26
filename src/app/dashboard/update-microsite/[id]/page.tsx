@@ -1,7 +1,7 @@
 'use client';
 import { MicrositeAttributes } from '@/app/types/microsite';
 import Person2Icon from '@mui/icons-material/Person2';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Introduction from '@/app/components/Introduction';
 import Navigation from '@/app/components/Navigation';
@@ -15,17 +15,22 @@ import CTA from '@/app/components/CTA';
 import Footer from '@/app/components/Footer';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getSingleMicrosite, updateMicrosite } from '@/app/services';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useTokenContext } from '@/app/context/TokenContext';
 
 const UpdateForm = ({ microsite }: { microsite: MicrositeAttributes }) => {
     ///Updating microsite form
     const { token, setToken } = useTokenContext();
+    const router = useRouter()
     ///Navigation bar of the updating microsite page, each index is each part of the microsite
     const parts = ['Introduction', 'Navigation', 'Hero Section', 'Proof Section', 'How Section', 'Case Section', 'Benefit', 'FAQ', 'CTA', 'Footer'];
     ///Start with the Introduction part. (currentPart == 0)
     const [currentPart, setCurrentPart] = useState(0);
-
+    useEffect(() => {
+        if (!token) {
+            router.push('/');
+        }
+    }, [token])
     ///Update microsite mutations
     const updateMicrositeMutation = useMutation({
         mutationKey: ['update_mutation'],
@@ -113,9 +118,6 @@ const UpdateForm = ({ microsite }: { microsite: MicrositeAttributes }) => {
         }
     }
     if (!microsite) return null
-    if (!token) {
-        return <div className='w-full flex justify-center font-bold text-xl bg-white'>Please login before trying to access to this page</div>
-    }
     return (
         <div className="w-full scroll-smooth min-h-screen">
             <div className='w-full min-h-screen backdrop-blur-xs'>

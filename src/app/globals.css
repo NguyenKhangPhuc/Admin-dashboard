@@ -8,7 +8,7 @@
 /*------ Settings ------*/
 .arrow_down {
     --color: #a5a5b0;
-    --size: 30px;
+    --size: 20px;
     display: flex;
     justify-content: center;
     align-items: center;

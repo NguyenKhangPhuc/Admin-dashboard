@@ -6,18 +6,24 @@ import { MicrositeAttributes } from '@/app/types/microsite';
 import Person2Icon from '@mui/icons-material/Person2';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dayjs from "dayjs";
 import { useTokenContext } from '@/app/context/TokenContext';
+import { useRouter } from 'next/navigation';
 const Home = () => {
     ///Manage the profile page.
     const { token, setToken } = useTokenContext();
+    const router = useRouter();
     ///Get the information of the current user.
     const { data: me } = useQuery<UserAttributes>({
         queryKey: ['get_me'],
         queryFn: getMe
     })
-
+    useEffect(() => {
+        if (!token) {
+            router.push('/')
+        }
+    }, [token])
     ///The default cursor is order by times (Newest to oldest)
     const [cursor, setCursor] = useState<PaginationCursor>({ order: '-1', type: 'createdAt', nextPage: null, prevPage: null, search: '' })
 
@@ -30,9 +36,6 @@ const Home = () => {
     console.log(data)
     const microsites = data?.docs
     console.log(cursor)
-    if (!token) {
-        return <div className='w-full flex justify-center font-bold text-xl bg-white'>Please login before trying to access to this page</div>
-    }
     return (
         <div className='w-full min-h-screen z-0'>
             <div className='max-w-screen mx-auto py-10 flex flex-col gap-10 text-white'>
@@ -57,7 +60,6 @@ const Home = () => {
                                         Microsite name: <strong>{microsite.brand}</strong>
                                     </div>
                                     <div className="w-full flex items-center gap-2">Domain: <strong className='break-all'>{`http://${microsite.domain}/`}</strong></div>
-                                    <div className="w-full flex items-center gap-2">Site type: <strong>Seller/Buyer</strong></div>
                                     <div className="w-full flex items-center gap-2">Leads: <strong>{microsite.leads?.length}</strong></div>
                                     <div className="w-full flex items-center gap-2">Created: <strong>{dayjs(microsite.createdAt).format("DD-MM-YY")}</strong></div>
                                     <div className="w-full flex items-center gap-2">Last updated: <strong>{dayjs(microsite.updatedAt).format("DD-MM-YY")}</strong></div>
@@ -69,8 +71,6 @@ const Home = () => {
                             )
                         })}
                     </div>
-
-
                 </div>
                 <div className='w-full flex justify-center  py-2 font-semibold'>
                     <Link href={`/dashboard/manage-microsite`} className='bg-[#302e2b] hover:bg-[#454441] rounded-lg px-15 py-2'>View More</Link>

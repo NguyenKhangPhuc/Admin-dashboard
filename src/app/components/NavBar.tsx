@@ -31,23 +31,23 @@ const NavBar = () => {
                     <path className="line" d="M7 16 27 16"></path>
                 </svg>
             </label>
-            <Link href={token ? "/dashboard/profile" : '/'} className="w-full justify-center p-3 flex gap-2 items-center hover:bg-[#302e2b] rounded bg-gray-500">
+            <Link href={token ? "/dashboard/profile" : '/'} className="w-full justify-center p-3 flex gap-2 items-center bg-[#302e2b] hover:bg-black">
                 <AccountBoxIcon />
                 <span className={`${isOpen ? 'block' : 'sm:block hidden'}`}>Profile</span>
             </Link>
-            <Link href={token ? "/dashboard/manage-microsite" : '/'} className="w-full justify-center p-3 flex gap-2 items-center hover:bg-[#302e2b] rounded bg-gray-500">
+            <Link href={token ? "/dashboard/manage-microsite" : '/'} className="w-full justify-center p-3 flex gap-2 items-center bg-[#302e2b] hover:bg-black">
                 <LanguageIcon />
                 <span className={`${isOpen ? 'block' : 'sm:block hidden'}`}>Manage</span>
             </Link>
-            <Link href={token ? '/dashboard/create-microsite' : '/'} className="w-full justify-center p-3 flex gap-2 items-center hover:bg-[#302e2b] rounded bg-gray-500">
+            <Link href={token ? '/dashboard/create-microsite' : '/'} className="w-full justify-center p-3 flex gap-2 items-center bg-[#302e2b] hover:bg-black">
                 <AddCircleIcon />
                 <span className={`${isOpen ? 'block' : 'sm:block hidden'}`}>Create</span>
             </Link>
-            {token ? <Link href={'/'} className="w-full justify-center p-3 flex gap-2 items-center hover:bg-[#302e2b] rounded bg-gray-500" onClick={() => handleLogout()}>
+            {token ? <Link href={'/'} className="w-full justify-center p-3 flex gap-2 items-center bg-[#302e2b] hover:bg-black/50" onClick={() => handleLogout()}>
                 <LogoutIcon />
                 <span className={`${isOpen ? 'block' : 'sm:block hidden'}`}> Logout</span>
             </Link> :
-                <Link href={'/'} className="w-full justify-center p-3 flex gap-2 items-center hover:bg-[#302e2b] rounded bg-gray-500">
+                <Link href={'/'} className="w-full justify-center p-3 flex gap-2 items-center bg-[#302e2b] hover:bg-black/50">
                     <LogoutIcon />
                     <span className={`${isOpen ? 'block' : 'sm:block hidden'}`}> Login</span>
                 </Link>}

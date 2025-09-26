@@ -36,22 +36,7 @@ const CaseSection = ({ isAvailable, register, errors }: Props<MicrositeAttribute
             <label className={`${isAvailable ? 'block' : 'hidden'} w-full items-center flex flex-col gap-5 `}>
                 <div className='text-xl font-bold'>Case Items </div>
                 <div className='w-full flex flex-col'>
-                    <div className='w-full flex gap-5'>
-                        <label className='w-1/2 flex flex-col gap-1'>
-                            <div className='text-medium font-bold'>Image 1</div>
-                            <input className='w-full px-5 py-1 border border-gray-400 rounded-lg' placeholder='Input image'
-                                {...register('cases.items.0.image', { required: 'Case image 1 is required' })}
-                            />
-                            {errors.cases?.items && errors.cases.items[0]?.image && <div className="error_message">{errors.cases.items[0]?.image.message}</div>}
-                        </label>
-                        <label className='w-1/2 flex flex-col gap-1'>
-                            <div className='text-medium font-bold'>Alt 1</div>
-                            <input className='w-full px-5 py-1 border border-gray-400 rounded-lg' placeholder='Input alt'
-                                {...register('cases.items.0.alt', { required: 'Case alt 1 is required' })}
-                            />
-                            {errors.cases?.items && errors.cases.items[0]?.alt && <div className="error_message">{errors.cases.items[0]?.alt.message}</div>}
-                        </label>
-                    </div>
+
 
                     <div className='w-full flex gap-5'>
                         <label className='w-1/2 flex flex-col gap-1'>
@@ -80,22 +65,7 @@ const CaseSection = ({ isAvailable, register, errors }: Props<MicrositeAttribute
                 </div>
 
                 <div className='w-full flex flex-col'>
-                    <div className='w-full flex gap-5'>
-                        <label className='w-1/2 flex flex-col gap-1'>
-                            <div className='text-medium font-bold'>Image 2</div>
-                            <input className='w-full px-5 py-1 border border-gray-400 rounded-lg' placeholder='Input image'
-                                {...register('cases.items.1.image', { required: 'Case image 2 is required' })}
-                            />
-                            {errors.cases?.items && errors.cases.items[1]?.image && <div className="error_message">{errors.cases.items[1]?.image.message}</div>}
-                        </label>
-                        <label className='w-1/2 flex flex-col gap-1'>
-                            <div className='text-medium font-bold'>Alt 2</div>
-                            <input className='w-full px-5 py-1 border border-gray-400 rounded-lg' placeholder='Input alt'
-                                {...register('cases.items.1.alt', { required: 'Case alt 2 is required' })}
-                            />
-                            {errors.cases?.items && errors.cases.items[1]?.alt && <div className="error_message">{errors.cases.items[1]?.alt.message}</div>}
-                        </label>
-                    </div>
+
 
                     <div className='w-full flex gap-5'>
                         <label className='w-1/2 flex flex-col gap-1'>

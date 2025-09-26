@@ -1,7 +1,7 @@
 'use client';
 import { MicrositeAttributes } from '@/app/types/microsite';
 import Person2Icon from '@mui/icons-material/Person2';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Introduction from '@/app/components/Introduction';
 import Navigation from '@/app/components/Navigation';
@@ -17,9 +17,17 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { createMicrosite, getMe } from '@/app/services';
 import { UserAttributes } from '@/app/types';
 import { useTokenContext } from '@/app/context/TokenContext';
+import { useRouter } from 'next/navigation';
 
 const Home = () => {
     const { token, setToken } = useTokenContext();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!token) {
+            router.push('/');
+        }
+    }, [token])
     const parts = ['Introduction', 'Navigation', 'Hero Section', 'Proof Section', 'How Section', 'Case Section', 'Benefit', 'FAQ', 'CTA', 'Footer'];
     const defaultValue: MicrositeAttributes = {
         title: "", domain: "", styles: "", brand: "", navButton: "",
@@ -29,7 +37,7 @@ const Home = () => {
             { href: "", label: "", },
             { href: "", label: "", },
         ],
-        hero: { poster: "", video: "", preHeadline: "", headline: "", subheading: "", button: "", },
+        hero: { preHeadline: "", headline: "", subheading: "", button: "", },
         proofs: [
             { icon: "", number: "", text: "", },
             { icon: "", number: "", text: "", },
@@ -47,8 +55,8 @@ const Home = () => {
             title: "",
             subtitle: "",
             items: [
-                { image: "", alt: "", quote: "", author: "", result: "", },
-                { image: "", alt: "", quote: "", author: "", result: "", },
+                { quote: "", author: "", result: "", },
+                { quote: "", author: "", result: "", },
             ],
             logosTitle: "",
             logos: [''],
@@ -102,7 +110,10 @@ const Home = () => {
     })
     const createMicrositeMutation = useMutation({
         mutationKey: ['create_microsite'],
-        mutationFn: createMicrosite
+        mutationFn: createMicrosite,
+        onSuccess: () => {
+            router.push('/dashboard/manage-microsite')
+        }
     })
     const { register, handleSubmit, formState: { errors } } = useForm<MicrositeAttributes>({
         defaultValues: defaultValue
@@ -152,9 +163,6 @@ const Home = () => {
                 return false
         }
     }
-    if (!token) {
-        return <div className='w-full flex justify-center font-bold text-xl bg-white'>Please login before trying to access to this page</div>
-    }
     return (
         <div className="w-full scroll-smooth min-h-screen">
             <div className='w-full min-h-screen  backdrop-blur-xs'>
@@ -170,7 +178,7 @@ const Home = () => {
                         {parts.map((part, index) => {
                             return (
                                 <div
-                                    className={`${parts[currentPart] === part && 'bg-[#454441]'} cursor-pointer lg:w-1/5 w-1/3 flex justify-center items-center text-center p-5  hover:bg-[#454441] ${handleErrors(index) && 'text-red-500'}`}
+                                    className={`${parts[currentPart] === part && 'bg-black'} cursor-pointer lg:w-1/5 w-1/3 flex justify-center items-center text-center p-5  hover:bg-black/50 ${handleErrors(index) && 'text-red-500'}`}
                                     key={`part ${part}`}
                                     onClick={() => setCurrentPart(index)}
                                 >{part}</div>
