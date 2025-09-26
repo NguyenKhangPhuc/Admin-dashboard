@@ -4,7 +4,7 @@ import { MicrositeAttributes } from "../types/microsite";
 let userToken: string | null;
 
 const apiClient = axios.create({
-    baseURL: '/api'
+    baseURL: 'http://localhost:3005/api'
 })
 
 ///Whenever the app reload, check if there is a token stored in local storage, if yes, attach it to each request to backend.

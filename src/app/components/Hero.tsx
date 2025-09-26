@@ -7,23 +7,6 @@ const HeroSection = ({ isAvailable, register, errors }: Props<MicrositeAttribute
             <div className='text-xl font-bold'>Hero Section </div>
             <div className='w-full flex gap-5'>
                 <label className='w-1/2 flex flex-col gap-1'>
-                    <div className='text-medium font-bold'>Poster </div>
-                    <input className='w-full px-5 py-1 border border-gray-400 rounded-lg' placeholder='Input poster'
-                        {...register('hero.poster', { required: 'Poster is required' })}
-                    />
-                    {errors.hero?.poster && <div className="error_message">{errors.hero.poster.message}</div>}
-                </label>
-                <label className='w-1/2 flex flex-col gap-1'>
-                    <div className='text-medium font-bold'>Video </div>
-                    <input className='w-full px-5 py-1 border border-gray-400 rounded-lg' placeholder='Input video'
-                        {...register('hero.video', { required: 'Video is required' })}
-                    />
-                    {errors.hero?.video && <div className="error_message">{errors.hero.video.message}</div>}
-                </label>
-
-            </div>
-            <div className='w-full flex gap-5'>
-                <label className='w-1/2 flex flex-col gap-1'>
                     <div className='text-medium font-bold'>Preheadline </div>
                     <input className='w-full px-5 py-1 border border-gray-400 rounded-lg' placeholder='Input preheadline'
                         {...register('hero.preHeadline', { required: 'Preheadline is required' })}

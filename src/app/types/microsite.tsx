@@ -7,8 +7,6 @@ export interface NavLinks {
 }
 
 export interface HeroSection {
-    poster: string,
-    video: string,
     preHeadline: string,
     headline: string,
     subheading: string,
@@ -34,8 +32,6 @@ export interface HowSection {
 }
 
 export interface CaseItem {
-    image: string,
-    alt: string,
     quote: string,
     author: string,
     result: string,
