@@ -140,7 +140,6 @@ const Home = () => {
 
     // Function to create the microsite
     const handleCreateForm = (values: MicrositeAttributes) => {
-        console.log(values)
         createMicrositeMutation.mutate(values)
     }
 

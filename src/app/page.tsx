@@ -25,7 +25,6 @@ const LoginForm = ({ router, setIsOpen }: { router: AppRouterInstance, setIsOpen
       ///Set the token to each request from Front-end to Back-end.
       setTokenToRequest()
       ///Pushing the user to go to profile page.
-      console.log(token)
       router.push('/dashboard/profile')
       setToken(token);
     },
@@ -46,7 +45,6 @@ const LoginForm = ({ router, setIsOpen }: { router: AppRouterInstance, setIsOpen
   })
   const login = (values: UserAttributes) => {
     ///Login function.
-    console.log(values)
     loginMutation.mutate(values)
   }
   return (
@@ -113,7 +111,6 @@ const SignUpForm = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.SetStateAct
   })
 
   const signUp = (values: UserAttributes) => {
-    console.log(values)
     ///Sign up.
     signUpMutation.mutate(values)
   }
@@ -171,7 +168,6 @@ export default function Home() {
   useEffect(() => {
     ///Check if there is already token stored in local storage
     const token = localStorage.getItem('userToken')
-    console.log(token)
     if (token) {
       ///If there is, go to the profile page.
       router.push('/dashboard/profile')

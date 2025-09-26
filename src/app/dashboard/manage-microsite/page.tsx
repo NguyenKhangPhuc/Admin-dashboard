@@ -79,9 +79,7 @@ const Home = () => {
         ///Search input is still in query because it does not affect.
         setCursor({ order: filterOption.order, type: filterOption.type, nextPage: null, prevPage: null, search: searchInput })
     }
-    console.log(cursor)
     const microsites = data?.docs
-    console.log(data)
     return (
         <div className="w-full scroll-smooth min-h-screen relative">
             {openFilter && <div className='absolute w-full h-screen backdrop-blur-sm z-10 flex justify-center items-center'>
