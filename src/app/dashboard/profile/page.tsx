@@ -33,9 +33,7 @@ const Home = () => {
         queryFn: () => getMicrosite(cursor)
     })
 
-    console.log(data)
     const microsites = data?.docs
-    console.log(cursor)
     return (
         <div className='w-full min-h-screen z-0'>
             <div className='max-w-screen mx-auto py-10 flex flex-col gap-10 text-white'>

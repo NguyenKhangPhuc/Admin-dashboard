@@ -59,7 +59,6 @@ const UpdateForm = ({ microsite }: { microsite: MicrositeAttributes }) => {
 
     const handleUpdateForm = (values: MicrositeAttributes) => {
         ///Updating form function, with the micrositeId and the updated Microsite is the values of the react hook form.
-        console.log(values)
         updateMicrositeMutation.mutate({ micrositeId: microsite.id!, updatedMicrosite: values })
     }
 
